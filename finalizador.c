@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/shm.h>
+#include <string.h>
 #include <sys/sem.h>
 #include <unistd.h>
 #include <time.h>
@@ -36,7 +37,9 @@ void escribir_bitacora(int semid, const char* mensaje) {
     FILE *log = fopen(BITACORA_FILE, "a");
     if (log) {
         time_t now = time(NULL);
-        fprintf(log, "[%s] %s\n", ctime(&now), mensaje);
+        char *timestamp = ctime(&now);
+        timestamp[strcspn(timestamp, "\n")] = 0;  // eliminar el salto de línea
+        fprintf(log, "[%s] %s\n", timestamp, mensaje);
         fclose(log);
     }
     up(semid, 1);
@@ -76,10 +79,13 @@ int main() {
     sprintf(msg, "Finalizador: liberó %d líneas de memoria.", liberadas);
     escribir_bitacora(semid, msg);
 
+    escribir_bitacora(semid, "Finalizador: Recursos eliminados. Sistema terminado.");
+
     shmdt(mem);
     shmctl(shmid, IPC_RMID, NULL);
     semctl(semid, 0, IPC_RMID);
-    escribir_bitacora(semid, "Finalizador: recursos eliminados. Sistema terminado.");
+
+    system("pkill -f productor");  // Mata cualquier proceso llamado 'productor'
 
     printf("Sistema finalizado correctamente.\n");
     return 0;
