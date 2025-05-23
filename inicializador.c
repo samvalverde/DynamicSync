@@ -93,7 +93,10 @@ int main() {
         exit(EXIT_FAILURE);
         goto cleanup;
     }
-    fprintf(log, "BITÁCORA DE EVENTOS - INICIALIZACIÓN %s\n", ctime(&(time_t){time(NULL)}));
+    if(n_lineas == 1)
+        fprintf(log, "BITÁCORA DE EVENTOS - INICIALIZADO CON %d LINEA %s\n", n_lineas, ctime(&(time_t){time(NULL)}));
+    else
+        fprintf(log, "BITÁCORA DE EVENTOS - INICIALIZADO CON %d LINEAS %s\n", n_lineas, ctime(&(time_t){time(NULL)}));
     fclose(log);
 
     printf("Inicialización completada.\n");

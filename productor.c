@@ -41,6 +41,7 @@ typedef struct {
     int tamanio;
     int duracion;
     Algoritmo algoritmo;
+    int semid;
 } ProcesoArgs;
 
 // --------------------- SEMÁFORO ---------------------
@@ -67,7 +68,6 @@ void escribir_bitacora(int semid, const char* mensaje) {
     }
     up(semid, 1);
 }
-
 
 
 // ----------------- BÚSQUEDA DE HUECO ----------------
@@ -105,6 +105,7 @@ int buscar_hueco(Memoria *mem, int size, Algoritmo alg) {
 // ---------------------- THREAD ----------------------
 void* simular_proceso(void* arg) {
     ProcesoArgs *p = (ProcesoArgs*)arg;
+    int semid = p->semid;
 
     int shmid = shmget(SHM_KEY, sizeof(Memoria), 0666);
     if (shmid < 0) {
@@ -115,13 +116,6 @@ void* simular_proceso(void* arg) {
     Memoria *mem = (Memoria *)shmat(shmid, NULL, 0);
     if (mem == (void *) -1) {
         perror("Fallo al mapear memoria");
-        pthread_exit(NULL);
-    }
-
-    int semid = semget(SEM_KEY, 2, 0666);
-    if (semid < 0) {
-        perror("No se pudo acceder a los semáforos");
-        shmdt(mem);
         pthread_exit(NULL);
     }
 
@@ -179,7 +173,29 @@ int main() {
     }
 
     Algoritmo algoritmo = (Algoritmo)tipo;
-    printf("Productor iniciado. Usando algoritmo %d\n", algoritmo);
+
+    int semid = semget(SEM_KEY, 2, 0666);
+    if (semid < 0) {
+        perror("No se pudo acceder a los semáforos");
+        pthread_exit(NULL);
+    }
+
+    char msg[128];
+    switch (algoritmo) {
+        case FIRST_FIT:
+            sprintf(msg, "Productor iniciado con algoritmo: First-Fit");
+            printf("Productor iniciado. Usando algoritmo FIRST-FIT \n");
+            break;
+        case BEST_FIT:
+            sprintf(msg, "Productor iniciado con algoritmo: Best-Fit");
+            printf("Productor iniciado. Usando algoritmo BEST-FIT \n");
+            break;
+        case WORST_FIT:
+            sprintf(msg, "Productor iniciado con algoritmo: Worst-Fit");
+            printf("Productor iniciado. Usando algoritmo WORST-FIT \n");
+            break;
+    }
+    escribir_bitacora(semid, msg);
 
     int contador_pid = 1;
     while (1) {
