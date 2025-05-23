@@ -13,6 +13,11 @@
 #define MAX_LINEAS 1000
 #define BITACORA_FILE "bitacora.txt"
 
+/*Correr codigo
+gcc -o espia espia.c
+./espia
+*/
+
 typedef struct {
     int lineas[MAX_LINEAS];
     int total_lineas;
@@ -142,8 +147,8 @@ int main() {
     printf("\n");
     listar_pids_bloqueados();
 
-    printf("\n===== FRAGMENTACIÓN =====\n");
-    mostrar_fragmentacion(mem);
+    /*printf("\n===== FRAGMENTACIÓN =====\n");
+    mostrar_fragmentacion(mem);*/
 
 
     shmdt(mem);

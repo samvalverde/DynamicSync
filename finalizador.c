@@ -11,6 +11,11 @@
 #define BITACORA_FILE "bitacora.txt"
 #define MAX_LINEAS 1000
 
+/*Correr codigo
+gcc -o finalizador finalizador.c
+./finalizador
+*/
+
 typedef struct {
     int lineas[MAX_LINEAS];
     int total_lineas;

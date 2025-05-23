@@ -13,6 +13,12 @@
 #define BITACORA_FILE "bitacora.txt"
 #define MAX_LINEAS 1000 // límite máximo de líneas posibles
 
+/*Correr codigo y bitacora
+gcc -o inicializador inicializador.c
+./inicializador
+tail -f bitacora.txt
+*/
+
 // Estructura de memoria: cada línea puede ser 0 (libre) o un PID (>0)
 typedef struct {
     int lineas[MAX_LINEAS];

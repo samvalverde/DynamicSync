@@ -14,6 +14,11 @@
 #define BITACORA_FILE "bitacora.txt"
 #define MAX_LINEAS 1000
 
+/*Correr codigo
+gcc -o productor productor.c -lpthread
+./productor
+*/
+
 typedef struct {
     int lineas[MAX_LINEAS];
     int total_lineas;
@@ -181,18 +186,18 @@ int main() {
         ProcesoArgs *p = malloc(sizeof(ProcesoArgs));
         p->pid = getpid() * 1000 + contador_pid++; // Pseudo PID único
         p->tamanio = (rand() % 10) + 1; // 1-10 líneas
-        //p->duracion = 20 + rand() % 41; // 20-60 segundos
-        p->duracion = 5 + rand() % 6;  // duración muy corta (5–10s)
+        p->duracion = 20 + rand() % 41; // 20-60 segundos
+        //p->duracion = 5 + rand() % 6;  // duración muy corta (5–10s)
         p->algoritmo = algoritmo;
 
         pthread_t hilo;
         pthread_create(&hilo, NULL, simular_proceso, p);
         pthread_detach(hilo);
 
-        //int intervalo = 30 + rand() % 31; // 30-60 segundos
-        //sleep(intervalo);
-        int intervalo = 1 + rand() % 2;  // Genera un proceso cada 1-2 segundos
+        int intervalo = 30 + rand() % 31; // 30-60 segundos
         sleep(intervalo);
+        //int intervalo = 1 + rand() % 2;  // Genera un proceso cada 1-2 segundos
+        //sleep(intervalo);
     }
 
     return 0;
