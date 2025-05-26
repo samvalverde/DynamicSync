@@ -1,0 +1,6 @@
+BITÁCORA DE EVENTOS - INICIALIZADO CON 10 LINEAS Fri May 23 13:49:20 2025
+
+[Fri May 23 13:49:24 2025] Productor iniciado con algoritmo: Worst-Fit
+[Fri May 23 13:49:24 2025] PID 5379001 - Asignó 2 líneas en [0-1]
+[Fri May 23 13:49:32 2025] Finalizador: liberó 2 líneas de memoria.
+[Fri May 23 13:49:32 2025] Finalizador: Recursos eliminados. Sistema terminado.

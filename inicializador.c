@@ -13,6 +13,15 @@
 #define BITACORA_FILE "bitacora.txt"
 #define MAX_LINEAS 1000 // límite máximo de líneas posibles
 
+<<<<<<< HEAD
+=======
+/*Correr codigo y bitacora
+gcc -o inicializador inicializador.c
+./inicializador
+tail -f bitacora.txt
+*/
+
+>>>>>>> origin/main
 // Estructura de memoria: cada línea puede ser 0 (libre) o un PID (>0)
 typedef struct {
     int lineas[MAX_LINEAS];
@@ -47,6 +56,10 @@ int main() {
     Memoria *mem = (Memoria *)shmat(shmid, NULL, 0);
     if (mem == (void *) -1) {
         perror("Error al mapear memoria compartida");
+<<<<<<< HEAD
+=======
+        shmctl(shmid, IPC_RMID, NULL);
+>>>>>>> origin/main
         exit(EXIT_FAILURE);
     }
 
@@ -60,6 +73,11 @@ int main() {
     int semid = semget(SEM_KEY, 2, IPC_CREAT | 0666);
     if (semid < 0) {
         perror("Error al crear semáforos");
+<<<<<<< HEAD
+=======
+        shmdt(mem);
+        shmctl(shmid, IPC_RMID, NULL);
+>>>>>>> origin/main
         exit(EXIT_FAILURE);
     }
 
@@ -69,10 +87,18 @@ int main() {
     if (semctl(semid, 0, SETVAL, arg) == -1) {
         perror("Error al inicializar semáforo de memoria");
         exit(EXIT_FAILURE);
+<<<<<<< HEAD
+=======
+        goto cleanup;
+>>>>>>> origin/main
     }
     if (semctl(semid, 1, SETVAL, arg) == -1) {
         perror("Error al inicializar semáforo de bitácora");
         exit(EXIT_FAILURE);
+<<<<<<< HEAD
+=======
+        goto cleanup;
+>>>>>>> origin/main
     }
 
     // Crear/limpiar archivo de bitácora
@@ -80,6 +106,7 @@ int main() {
     if (!log) {
         perror("Error al crear bitácora");
         exit(EXIT_FAILURE);
+<<<<<<< HEAD
     }
     fprintf(log, "BITÁCORA DE EVENTOS - INICIALIZACIÓN %s\n", ctime(&(time_t){time(NULL)}));
     fclose(log);
@@ -89,4 +116,30 @@ int main() {
     printf("Inicialización completada. Memoria y semáforos listos.\n");
 
     return 0;
+=======
+        goto cleanup;
+    }
+    if(n_lineas == 1)
+        fprintf(log, "BITÁCORA DE EVENTOS - INICIALIZADO CON %d LINEA %s\n", n_lineas, ctime(&(time_t){time(NULL)}));
+    else
+        fprintf(log, "BITÁCORA DE EVENTOS - INICIALIZADO CON %d LINEAS %s\n", n_lineas, ctime(&(time_t){time(NULL)}));
+    fclose(log);
+
+    printf("Inicialización completada.\n");
+    printf("  > Memoria compartida creada con ID: %d\n", shmid);
+    printf("  > Semáforos creados con ID: %d\n", semid);
+    printf("  > Archivo de bitácora listo: %s\n", BITACORA_FILE);
+
+    // Desconectarse y terminar
+    shmdt(mem);
+    //printf("Inicialización completada. Memoria y semáforos listos.\n");
+
+    return 0;
+
+    cleanup:
+    shmdt(mem);
+    shmctl(shmid, IPC_RMID, NULL);
+    semctl(semid, 0, IPC_RMID);
+    exit(EXIT_FAILURE);
+>>>>>>> origin/main
 }
